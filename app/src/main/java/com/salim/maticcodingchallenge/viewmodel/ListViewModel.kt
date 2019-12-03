@@ -19,10 +19,7 @@ class ListViewModel : ViewModel() {
     //lateinit var to assure that the variable will be initialized before use
     @Inject
     lateinit var reposService: ReposService
-    //instantiate a disposable
-    //holds multiple disposable..
-    // disposable is used in rx programming to be cleared after finishing its functionality
-    // in our case calling api and waiting for response
+   
     private val disposable = CompositeDisposable()
 
     //instantiate data that affects the view
@@ -53,7 +50,7 @@ class ListViewModel : ViewModel() {
 
     }
 
-    //calls the ReposService.getRepos from  to get the repos as a disposable in the composite disposable
+    //calls the ReposService.getRepos to get the repos
     //populate the data containers
     //handles error
     private fun loadRepos(date: String, sort: String, order: String, page: Int) {
