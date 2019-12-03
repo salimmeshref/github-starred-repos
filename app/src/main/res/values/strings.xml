@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Matic Coding Challenge</string>
+    <string name="error_loading_repos">An error occured while loading repos</string>
+    <string name="trending_repos">Trending Repos</string>
+    <string name="no_more_repos">finished Loading repos</string>
+    <string name="created_gt">created</string>
+    <string name="date_pattern">yyyy-MM-dd</string>
+    <string name="sort_criteria">stars</string>
+    <string name="order">desc</string>
+</resources>

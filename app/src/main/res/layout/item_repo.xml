@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/rectangle_container">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:textSize="@dimen/title_text_size"
+        android:paddingLeft="@dimen/text_view_padding"
+        android:paddingTop="@dimen/text_view_padding"
+        android:textColor="@android:color/black"/>
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/text_view_padding"
+        android:paddingRight="@dimen/text_view_padding"
+
+        android:textSize="@dimen/description_text_size"
+        android:textColor="@android:color/black"
+        android:maxLength="100"
+        android:ellipsize="end"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/text_view_padding">
+
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:layout_marginBottom="@dimen/margin"
+            android:layout_marginTop="@dimen/margin"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_launcher_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/owner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/text_view_padding"
+            android:textSize="@dimen/owner_text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/avatar"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColor="@android:color/black"/>
+
+        <TextView
+            android:id="@+id/stars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:padding="@dimen/text_view_padding"
+            android:textSize="@dimen/owner_text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColor="@android:color/black"/>
+
+        <ImageView
+            android:id="@+id/star_icon"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/stars"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_star"/>
+
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</LinearLayout>
