@@ -40,8 +40,9 @@ class MainActivity : AppCompatActivity() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(1)){// end of list reached
-                    //  excessive api calls will cause http error 403  message:"API rate limit exceeded for <device IP>...
-                    if (repoListAdapter.itemCount<300 && viewModel.reposLoadingError.value==false) {
+                    val oldCount = repoListAdapter.itemCount
+                    // Only the first 1000 search results are available
+                    if (repoListAdapter.itemCount<1000 && viewModel.reposLoadingError.value==false) {
                         viewModel.loadMore()
                     }
                 }

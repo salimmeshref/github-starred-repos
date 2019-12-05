@@ -55,6 +55,9 @@ class ListViewModel : ViewModel() {
     //handles error
     private fun loadRepos(date: String, sort: String, order: String, page: Int) {
         loading.value = true
+        Thread.sleep(1000)// to add delay between api calls;
+        // frequent api calls with no delay in between will cause http error 403
+        // message:"API rate limit exceeded for <device IP>...
         disposable.add(reposService.getRepos(date, sort, order, page)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
