@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import com.salim.maticcodingchallenge.R
 import com.salim.maticcodingchallenge.viewmodel.ListViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -40,10 +42,10 @@ class MainActivity : AppCompatActivity() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(1)){// end of list reached
-                    val oldCount = repoListAdapter.itemCount
                     // Only the first 1000 search results are available
                     if (repoListAdapter.itemCount<1000 && viewModel.reposLoadingError.value==false) {
                         viewModel.loadMore()
+                        Log.d("debug", "item count =${repoListAdapter.itemCount}")
                     }
                 }
             }
@@ -57,23 +59,33 @@ class MainActivity : AppCompatActivity() {
     //observe changes in the ViewModel's data variables
     //in order to update the view
     private fun observeViewModel(){
-        viewModel.response.observe(this, Observer { repos->repos?.let {
-            repos_list.visibility= View.VISIBLE
-            repoListAdapter.updateRepos(it.repos)
+        viewModel.response.observe(this, Observer { repos->repos?.let{
+                repos_list.visibility= View.VISIBLE
+                repoListAdapter.updateRepos(it.repos)
             }
         })
 
         viewModel.reposLoadingError.observe(this,Observer{
             isError -> isError?.let{
                 list_error.visibility= if(it) View.VISIBLE else View.GONE
+                repos_list.visibility= if(it)View.GONE else View.VISIBLE
             }
         })
 
         viewModel.loading.observe(this, Observer { isLoading->
             isLoading?.let{
                 loading_view.visibility = if(it)View.VISIBLE else View.GONE
-                if(it){
-                    list_error.visibility= View.GONE
+                repos_list.isLayoutFrozen= it
+                if (it) {
+                    list_error.visibility = View.GONE
+                }
+            }
+        })
+
+        viewModel.apiLimitReached.observe(this, Observer { isReached->
+            isReached?.let {
+                if (it) {
+                    Toast.makeText(applicationContext, "API limit exceeded for this device ", Toast.LENGTH_SHORT).show()
                 }
             }
         })

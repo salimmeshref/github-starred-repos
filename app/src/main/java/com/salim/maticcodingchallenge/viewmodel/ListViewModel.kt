@@ -2,6 +2,7 @@ package com.salim.maticcodingchallenge.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.util.Log
 import com.salim.maticcodingchallenge.di.DaggerApiComponent
 import com.salim.maticcodingchallenge.model.ReposService
 import com.salim.maticcodingchallenge.model.Response
@@ -10,6 +11,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import retrofit2.HttpException
 import java.util.*
 import javax.inject.Inject
 
@@ -27,6 +29,7 @@ class ListViewModel : ViewModel() {
     val response = MutableLiveData<Response>()
     val reposLoadingError = MutableLiveData<Boolean>()
     val loading = MutableLiveData<Boolean>()
+    val apiLimitReached = MutableLiveData<Boolean>()
 
 
     init {
@@ -43,8 +46,10 @@ class ListViewModel : ViewModel() {
         val datePattern = "yyyy-MM-dd"
         val createdGreaterThan = "created:>"
         val date = createdGreaterThan + toSimpleString(calendar.time, datePattern)
-        //pass the query params to loadRepos
-        loadRepos(date, "stars", "desc", page)
+
+
+        loadRepos(date, "stars", "desc", page)//pass the query params to loadRepos
+
         //increment the page parameter for the next hit
         page++
 
@@ -54,10 +59,17 @@ class ListViewModel : ViewModel() {
     //populate the data containers
     //handles error
     private fun loadRepos(date: String, sort: String, order: String, page: Int) {
+
+        // when we are at page 10 api is returning Http error code 403 forbiden with the following response
+        // {
+        //      "message": "API rate limit exceeded for 178.135.95.8. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)",
+        //      "documentation_url": "https://developer.github.com/v3/#rate-limiting"
+        // }
+        if (page>10) {
+            apiLimitReached.value = true
+            return
+        }
         loading.value = true
-        Thread.sleep(1000)// to add delay between api calls;
-        // frequent api calls with no delay in between will cause http error 403
-        // message:"API rate limit exceeded for <device IP>...
         disposable.add(reposService.getRepos(date, sort, order, page)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -69,8 +81,20 @@ class ListViewModel : ViewModel() {
                     }
 
                     override fun onError(e: Throwable?) {
+
                         loading.value = false
-                        reposLoadingError.value = true
+
+                        if (e is HttpException) {
+                            Log.d("debug ", "page=$page")
+                            Log.d("error", "error code = ${e.code()} error response = ${e.response()}")
+                            if(e.code()==403){
+                                reposLoadingError.value = false
+                                apiLimitReached.value= true
+                                return
+                            }
+
+                            reposLoadingError.value = true
+                        }
                     }
                 }))
     }
