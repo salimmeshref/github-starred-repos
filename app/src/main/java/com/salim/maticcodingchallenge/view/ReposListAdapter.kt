@@ -20,6 +20,7 @@ class ReposListAdapter(var repos :ArrayList<Repo>):RecyclerView.Adapter<ReposLis
     //notify the adapter that the data has changed
     fun updateRepos(newRepos:List<Repo>){
         repos.addAll(newRepos)
+        repos.sortByDescending { it.starsCount }
         notifyDataSetChanged()
     }
 
